@@ -18,6 +18,9 @@ app.use(express.static('public'))
 
 // Routes
 
+const UserRoutes = require('./routes/User.Routes')
+
+app.use('/users', UserRoutes)
 
 
 app.listen(port, () => {

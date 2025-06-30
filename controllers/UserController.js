@@ -219,6 +219,4 @@ module.exports = class UserController {
 
     }
 
-
-
 }

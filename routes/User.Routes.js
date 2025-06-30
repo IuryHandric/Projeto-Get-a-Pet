@@ -4,6 +4,7 @@ const UserController = require('../controllers/UserController')
 
 // Middlewares
 const verifyToken = require('../helpers/verify-token')
+const { imageUpload } = require('../helpers/image-upload')
 
 router.post('/register', UserController.register)
 router.post('/login', UserController.login)
@@ -12,6 +13,6 @@ router.get('/:id', UserController.getUserById)
 
 
 // private routes
-router.patch('/edit/:id', verifyToken, UserController.editUser)
+router.patch('/edit/:id', verifyToken, imageUpload.single('image'), UserController.editUser)
 
 module.exports = router;

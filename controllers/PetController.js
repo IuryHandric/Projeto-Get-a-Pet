@@ -8,7 +8,9 @@ module.exports = class PetController {
 
     //create
     static async create(req, res) {
-        const { name, age, weight, color} = req.body
+        const { name, age, weight, color } = req.body
+
+        const images = req.files
 
         const available = true
 
@@ -29,9 +31,18 @@ module.exports = class PetController {
             }
         }
 
+        if (!images || images.length === 0) {
+            res.status(422).json({ message: 'Imagens são obrigatórias' })
+            return
+        }
+
         // get pet owner
-        const token = getToken(req) 
+        const token = getToken(req)
         const user = await getUserByToken(token)
+
+        if (!user) {
+            return res.status(401).json({ message: 'Usuário não autorizado!' });
+        }
 
         // create a pet
         const pet = new Pet({
@@ -48,17 +59,24 @@ module.exports = class PetController {
                 phone: user.phone
             }
         })
+
+        // images.map((image) => {
+        //     pet.images.push(image.filename)
+        // })
+
+        pet.images = images.map(image => image.filename);
+
+
         // save a pet into system
         try {
 
             const newPet = await pet.save()
-            res.status(201).json({message: 'Pet Cadastrado com sucesso!'}),
-            newPet
+            res.status(201).json({ message: 'Pet Cadastrado com sucesso!', pet: newPet }),
 
-            console.log('Pet Cadastrado com sucesso!', newPet)
-            
+                console.log('Pet Cadastrado com sucesso!', newPet)
+
         } catch (e) {
-            res.status(500).json({message: 'Erro de servidor!'})
+            res.status(500).json({ message: 'Erro de servidor!' })
         }
 
     }

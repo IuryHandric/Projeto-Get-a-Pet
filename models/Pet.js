@@ -19,6 +19,11 @@ const Pet = mongoose.model(
         available: {
             type: Boolean
         },
+        images: {
+            type: [String],
+            required: true,
+            default:[]
+        },
         user: Object,
         adopter: Object
     },
